@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Keycode from 'keycode';
 
 const Cell = ({ fill }) => {
@@ -42,9 +42,16 @@ const getRandomFoodPosition = (m, n) => {
 
 const Snake = ({ rows, columns }) => {
   const [arr, setArr] = useState(initialSnake); // first element is tail.. last element is head
-  const [direction, setDirection] = useState('right');
+  const [direction, _setDirection] = useState('right');
+  const directionRef = React.useRef(direction);
+
+  const setDirection = (dir) => {
+    directionRef.current = dir
+    _setDirection(dir)
+  }
+
   const [foodPosition, setFoodPosition] = useState(initialFoodPosition);
-  console.log('dir: ', direction);
+  console.log('dir: ', direction)
 
   const gameOver = () => {
     const headPosition = arr[arr.length - 1];
@@ -76,6 +83,7 @@ const Snake = ({ rows, columns }) => {
       }
       arr.push(newHead);
       if (cellsMatch(foodPosition, headPosition)) {
+        console.log('eating food');
         setFoodPosition(getRandomFoodPosition(rows, columns));
       } else {
         arr.shift();
@@ -84,44 +92,39 @@ const Snake = ({ rows, columns }) => {
     }
   };
 
-  let handleKeyEvents = (event, direction) => {
+  // cannot use state value directly in event listener handler, instead create a useRef value pointing to the state
+  // value thats needed
+  let handleKeyEvents = (event) => {
+    event.preventDefault()
     if (
       Keycode.isEventKey(event, 'up') &&
-      (direction === 'right' || direction === 'left')
+      (directionRef.current === 'right' || directionRef.current === 'left')
     ) {
-      console.log('direction: ', direction)
-      console.log('switching up');
+      console.log('switching up')
       setDirection('up');
     } else if (
       Keycode.isEventKey(event, 'down') &&
-      (direction === 'right' || direction === 'left')
+      (directionRef.current === 'right' || directionRef.current === 'left')
     ) {
-      console.log('direction: ', direction)
-      console.log('switching down');
+      console.log('switching down')
       setDirection('down');
     } else if (
       Keycode.isEventKey(event, 'right') &&
-      (direction === 'up' || direction === 'down')
+      (directionRef.current === 'up' || directionRef.current === 'down')
     ) {
-      console.log('direction: ', direction)
-      console.log('switching right');
+      console.log('switching right')
       setDirection('right');
     } else if (
       Keycode.isEventKey(event, 'left') &&
-      (direction === 'up' || direction === 'down')
+      (directionRef.current === 'up' || directionRef.current === 'down')
     ) {
-      console.log('direction: ', direction)
-      console.log('switching left');
+      console.log('switching left')
       setDirection('left');
     }
   };
 
   useEffect(() => {
-    moveSnake();
-  }, [direction]);
-
-  useEffect(() => {
-    window.addEventListener('keydown', (event) => handleKeyEvents(event, direction));
+    window.addEventListener('keydown', (event) => handleKeyEvents(event));
   }, []);
 
   useEffect(() => {
