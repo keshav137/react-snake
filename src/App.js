@@ -1,25 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
+import "./styles/styles.css";
+import Snake from "./components/Snake";
+// Design a snake game
 
-function App() {
+const ROWS = 12;
+const COLUMNS = 10;
+
+export default function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Snake rows={ROWS} columns={COLUMNS} />
     </div>
   );
 }
 
-export default App;
