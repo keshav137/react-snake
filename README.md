@@ -1,3 +1,3 @@
-# Instructions 
+# Demo
 
-Clone this repository and run `npm start`
+[Play Game](https://keshav137.github.io/react-snake/)
