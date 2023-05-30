@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Keycode from 'keycode';
+import React, { useState, useEffect, useRef } from "react";
+import Keycode from "keycode";
 
 const Cell = ({ fill }) => {
-  let cellClass = '';
-  if (fill === '0') {
-    cellClass = 'Cell';
+  let cellClass = "";
+  if (fill === "0") {
+    cellClass = "Cell";
   } else {
-    cellClass = 'Cell CellFill';
+    cellClass = "Cell CellFill";
   }
   return <div className={cellClass} />;
 };
 
 const initialSnake = [
   { x: 0, y: 0 },
-  { x: 0, y: 1 }
+  { x: 0, y: 1 },
 ];
 
 const initialFoodPosition = { x: 0, y: 5 };
@@ -36,22 +36,22 @@ const getRandomFoodPosition = (m, n) => {
   let y = Math.floor(Math.random() * (n - 1));
   return {
     x: x,
-    y: y
+    y: y,
   };
 };
 
 const Snake = ({ rows, columns }) => {
   const [arr, setArr] = useState(initialSnake); // first element is tail.. last element is head
-  const [direction, _setDirection] = useState('right');
+  const [direction, _setDirection] = useState("right");
   const directionRef = React.useRef(direction);
 
   const setDirection = (dir) => {
-    directionRef.current = dir
-    _setDirection(dir)
-  }
+    directionRef.current = dir;
+    _setDirection(dir);
+  };
 
   const [foodPosition, setFoodPosition] = useState(initialFoodPosition);
-  console.log('dir: ', direction)
+  console.log("dir: ", direction);
 
   const gameOver = () => {
     const headPosition = arr[arr.length - 1];
@@ -72,18 +72,18 @@ const Snake = ({ rows, columns }) => {
     const headPosition = arr[arr.length - 1];
     if (!isGameOver) {
       let newHead;
-      if (direction === 'right') {
+      if (direction === "right") {
         newHead = { x: headPosition.x, y: headPosition.y + 1 };
-      } else if (direction === 'left') {
+      } else if (direction === "left") {
         newHead = { x: headPosition.x, y: headPosition.y - 1 };
-      } else if (direction === 'up') {
+      } else if (direction === "up") {
         newHead = { x: headPosition.x - 1, y: headPosition.y };
       } else {
         newHead = { x: headPosition.x + 1, y: headPosition.y };
       }
       arr.push(newHead);
       if (cellsMatch(foodPosition, headPosition)) {
-        console.log('eating food');
+        console.log("eating food");
         setFoodPosition(getRandomFoodPosition(rows, columns));
       } else {
         arr.shift();
@@ -95,36 +95,36 @@ const Snake = ({ rows, columns }) => {
   // cannot use state value directly in event listener handler, instead create a useRef value pointing to the state
   // value thats needed
   let handleKeyEvents = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     if (
-      Keycode.isEventKey(event, 'up') &&
-      (directionRef.current === 'right' || directionRef.current === 'left')
+      Keycode.isEventKey(event, "up") &&
+      (directionRef.current === "right" || directionRef.current === "left")
     ) {
-      console.log('switching up')
-      setDirection('up');
+      console.log("switching up");
+      setDirection("up");
     } else if (
-      Keycode.isEventKey(event, 'down') &&
-      (directionRef.current === 'right' || directionRef.current === 'left')
+      Keycode.isEventKey(event, "down") &&
+      (directionRef.current === "right" || directionRef.current === "left")
     ) {
-      console.log('switching down')
-      setDirection('down');
+      console.log("switching down");
+      setDirection("down");
     } else if (
-      Keycode.isEventKey(event, 'right') &&
-      (directionRef.current === 'up' || directionRef.current === 'down')
+      Keycode.isEventKey(event, "right") &&
+      (directionRef.current === "up" || directionRef.current === "down")
     ) {
-      console.log('switching right')
-      setDirection('right');
+      console.log("switching right");
+      setDirection("right");
     } else if (
-      Keycode.isEventKey(event, 'left') &&
-      (directionRef.current === 'up' || directionRef.current === 'down')
+      Keycode.isEventKey(event, "left") &&
+      (directionRef.current === "up" || directionRef.current === "down")
     ) {
-      console.log('switching left')
-      setDirection('left');
+      console.log("switching left");
+      setDirection("left");
     }
   };
 
   useEffect(() => {
-    window.addEventListener('keydown', (event) => handleKeyEvents(event));
+    window.addEventListener("keydown", (event) => handleKeyEvents(event));
   }, []);
 
   useEffect(() => {
@@ -132,7 +132,7 @@ const Snake = ({ rows, columns }) => {
       if (!isGameOver) {
         moveSnake();
       }
-    }, 300);
+    }, 200);
 
     return () => {
       clearTimeout(timerId);
@@ -148,22 +148,22 @@ const Snake = ({ rows, columns }) => {
         containsCell(arr, { x: i, y: j }) ||
         cellsMatch({ x: i, y: j }, foodPosition)
       ) {
-        entryRow.push(<Cell fill='1' />);
+        entryRow.push(<Cell fill="1" />);
       } else {
-        entryRow.push(<Cell fill='0' />);
+        entryRow.push(<Cell fill="0" />);
       }
     }
-    grid.push(<div className='Row'>{entryRow}</div>);
+    grid.push(<div className="Row">{entryRow}</div>);
   }
 
   const resetGame = () => {
-    setDirection('right');
+    setDirection("right");
     setFoodPosition(initialFoodPosition);
     setArr(initialSnake);
   };
 
   if (isGameOver) {
-    window.removeEventListener('keydown', handleKeyEvents);
+    window.removeEventListener("keydown", handleKeyEvents);
   }
 
   return (
